@@ -42,6 +42,7 @@ static float const kTimerUpdateIntervalSeconds = 0.25;
       _audioPlayer = audioPlayer;
       _audioPlayer.delegate = self;
       _audioPlayer.numberOfLoops = isLooping ? -1 : 0;
+      _audioPlayer.enableRate = true; //@nishiyamaosamu added rate function for iOS
       [_audioPlayer prepareToPlay];
       [_delegate managedPlayerDidLoadWithDuration:_audioPlayer.duration forAudioId:_audioId];
       __weak FLTManagedPlayer *weakSelf = self;
@@ -231,6 +232,14 @@ static float const kTimerUpdateIntervalSeconds = 0.25;
     _audioPlayer.volume = volume;
   } else {
     _avPlayer.volume = volume;
+  }
+}
+
+- (void)setRate:(double)rate { //@nishiyamaosamu added rate function for iOS
+  if (_audioPlayer) {
+    _audioPlayer.rate = rate;
+  } else {
+    _avPlayer.rate = rate;
   }
 }
 

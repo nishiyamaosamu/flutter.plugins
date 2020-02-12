@@ -17,6 +17,8 @@ static NSString *const kEndpointSeconds = @"endpointSeconds";
 static NSString *const kSeekMethod = @"seek";
 static NSString *const kSetVolumeMethod = @"setVolume";
 static NSString *const kVolume = @"volume";
+static NSString *const kSetRateMethod = @"setRate"; //@nishiyamaosamu added rate function for iOS
+static NSString *const kRate = @"rate"; //@nishiyamaosamu added rate function for iOS
 static NSString *const kPauseMethod = @"pause";
 static NSString *const kOnCompleteCallback = @"onComplete";
 static NSString *const kOnDurationCallback = @"onDuration";
@@ -191,6 +193,10 @@ static NSString *const kMediaSkipIntervalSeconds = @"skipIntervalSeconds";
   } else if ([call.method isEqualToString:kSetVolumeMethod]) {
     double volume = [call.arguments[kVolume] doubleValue];
     [player setVolume:volume];
+    result(nil);
+  } else if ([call.method isEqualToString:kSetRateMethod]) { //@nishiyamaosamu added rate function for iOS
+    double rate = [call.arguments[kRate] doubleValue];
+    [player setRate:rate];
     result(nil);
   } else if ([call.method isEqualToString:kPauseMethod]) {
     [player pause];

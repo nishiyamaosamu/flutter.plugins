@@ -52,6 +52,7 @@ extern NSTimeInterval const FLTManagedPlayerPlayToEnd;
 - (void)releasePlayer;
 - (void)seek:(NSTimeInterval)position completionHandler:(void (^)())completionHandler;
 - (void)setVolume:(double)volume;
+- (void)setRate:(double)rate; //@nishiyamaosamu added rate function for iOS
 - (void)pause;
 
 @end

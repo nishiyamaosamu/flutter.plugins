@@ -27,6 +27,8 @@ const String endpointSecondsKey = 'endpointSeconds';
 const String seekMethod = 'seek';
 const String setVolumeMethod = 'setVolume';
 const String volumeKey = 'volume';
+const String setRateMethod = 'setRate'; //@nishiyamaosamu added rate function for iOS
+const String rateKey = 'rate'; //@nishiyamaosamu added rate function for iOS
 const String pauseMethod = 'pause';
 const String onCompleteCallback = 'onComplete';
 const String onDurationCallback = 'onDuration';
@@ -313,6 +315,7 @@ class Audio with WidgetsBindingObserver {
   bool _looping;
   bool _playing = false;
   double _volume = 1.0;
+  double _rate = 1.0; //@nishiyamaosamu added rate function for iOS
 
   /// Whether the [Audio] should continue playback when the app is backgrounded.
   bool _playInBackground = false;
@@ -595,6 +598,38 @@ class Audio with WidgetsBindingObserver {
       }
     }
   }
+
+  //@nishiyamaosamu added rate function for iOS
+  //@nishiyamaosamu START
+  double get rate => _rate;
+
+  Future<void> setRate(double rate) async {
+    if (!_undisposedAudios.containsKey(_audioId)) {
+      _logger.severe('Called set rate on a disposed Audio');
+      return;
+    }
+    if (rate < 0.0 || rate > 10.0) {
+      _logger.warning(
+          'Invalid rate value $rate is begin clamped to 0.0 to 1.0.');
+      rate.clamp(0.0, 10.0);
+    }
+
+    _rate = rate;
+
+    try {
+      await _sendMethodCall(_audioId, setRateMethod,
+          <String, dynamic>{audioIdKey: _audioId, rateKey: rate});
+    } on PlatformException catch (e) {
+      if (_usingOnErrorAudios.containsKey(_audioId)) {
+        // Audio has an onError callback.
+        _usingOnErrorAudios[_audioId]._onError(e.message);
+      } else {
+        // Audio does not use an onError callback: rethrow the exception.
+        rethrow;
+      }
+    }
+  }
+  //@nishiyamaosamu END
 
   /// Handle audio lifecycle changes.
   @override
